@@ -3,8 +3,9 @@ var webpack = require('webpack');
 
 module.exports = {
   entry: [
-    'webpack-hot-middleware/client',
-    './app/index.js'
+    'webpack-dev-server/client?http://127.0.0.1:8080/',
+    'webpack/hot/dev-server',
+    './src/index'
   ],
   output: {
     path: path.join(__dirname, 'build'),
@@ -16,13 +17,14 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /.jsx?$/,
-        loader: 'babel-loader',
+        test: /.js?$/,
+        loaders: ['react-hot', 'babel'],
         exclude: /node_modules/,
-        query: {
-          presets: ['es2015', 'react']
-        }
       }
     ]
+  },
+  devServer: {
+    hot: true,
+    contentBase: './'
   }
 };
