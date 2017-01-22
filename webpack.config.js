@@ -2,14 +2,14 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
+  devtool: 'cheap-module-eval-source-map',
   entry: [
-    'webpack-dev-server/client?http://127.0.0.1:8080/',
-    'webpack/hot/dev-server',
+    'webpack-hot-middleware/client',
     './src/index'
   ],
   output: {
-    path: path.join(__dirname, 'build'),
-    filename: 'bundle.js',
+    path: path.join(__dirname, 'dist'),
+    filename: 'bundle.js'
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin()
@@ -17,14 +17,10 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /.js?$/,
+        test: /\.js$/,
         loaders: ['react-hot', 'babel'],
-        exclude: /node_modules/,
+        include: path.join(__dirname, 'src')
       }
     ]
-  },
-  devServer: {
-    hot: true,
-    contentBase: './'
   }
 };
