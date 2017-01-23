@@ -4,22 +4,20 @@ import Item from './item';
 
 export default class List extends React.Component {
   render() {
-    const { filteredItems, toggleTodo } = this.props
+    const { filteredItems, toggleTodo, afterUpdate, currentFilter } = this.props
 
     return (
       <div>
-        <h3> Todo List </h3>
-        <div>
-          <a onClick={ this.handleClick.bind(this, 'All') }>All</a>
-          <a onClick={ this.handleClick.bind(this, false) }>Active</a>
-          <a onClick={ this.handleClick.bind(this, true) }>Completed</a>
-        </div>
         <ul>
           {filteredItems.map(function(todo, i){
-            return <Item todo={todo} toggleTodo={toggleTodo} key={todo.id}/>
+            return <Item todo={todo} toggleTodo={toggleTodo} key={todo.id} afterUpdate={ afterUpdate.bind(this) }/>
           })}
         </ul>
-
+        <div className='filter'>
+          <div className={ currentFilter == 'Completed' ? 'selected' : ''   }><a onClick={ this.handleClick.bind(this, 'Completed') }>Completed</a></div>
+          <div className={ currentFilter == 'Active' ? 'selected' : ''  }><a onClick={ this.handleClick.bind(this, 'Active') }>Active</a></div>
+          <div className={ currentFilter == 'All' ? 'selected' : ''  }><a onClick={ this.handleClick.bind(this, 'All') }>All</a></div>
+        </div>
       </div>
     )
   }

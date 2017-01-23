@@ -4,10 +4,10 @@ import List from './list';
 import CreateTodo from './create-todo';
 
 const defaultTodoItems = [
-  { id: 1, description: 'Buy Choclate', isCompleted: true },
-  { id: 2, description: 'Go To Gym', isCompleted: true },
-  { id: 3, description: 'Go To Gym1', isCompleted: true },
-  { id: 4, description: 'Go To Gym2', isCompleted: true }
+  { id: 1, description: 'Buy Choclate', isCompleted: false },
+  { id: 2, description: 'Go To Gym', isCompleted: false },
+  { id: 3, description: 'Go To Gym1', isCompleted: false },
+  { id: 4, description: 'Go To Gym2', isCompleted: false }
 ]
 
 
@@ -18,7 +18,8 @@ export default class App extends React.Component {
 
     this.state = {
       todoItems: defaultTodoItems,
-      filteredItems: defaultTodoItems
+      filteredItems: defaultTodoItems,
+      currentFilter: 'All'
     };
   }
 
@@ -26,7 +27,11 @@ export default class App extends React.Component {
     return (
       <div>
         <CreateTodo afterCreate={this.afterCreate.bind(this)}/>
-        <List filteredItems={this.state.filteredItems} toggleTodo={this.toggleTodo.bind(this)} filterTodo={this.filterTodo.bind(this)}/>
+        <List filteredItems={this.state.filteredItems}
+          toggleTodo={this.toggleTodo.bind(this)}
+          filterTodo={this.filterTodo.bind(this)}
+          afterUpdate={this.afterUpdate.bind(this)}
+          currentFilter={this.state.currentFilter}/>
       </div>
     )
   }
@@ -37,6 +42,12 @@ export default class App extends React.Component {
     this.setState({ todoItems: this.state.todoItems });
   }
 
+  afterUpdate(todo){
+    const foundTodo = _.find(this.state.todoItems, item => item.id === todo.id);
+    foundTodo.description = todo.description
+    return this.setState({ filteredItems: this.state.filteredItems });
+  }
+
   toggleTodo(todo) {
     const foundTodo = _.find(this.state.todoItems, item => item.id === todo.id);
     foundTodo.isCompleted = !foundTodo.isCompleted;
@@ -44,11 +55,13 @@ export default class App extends React.Component {
   }
 
   filterTodo(state){
+    this.state.currentFilter = state;
     if(state == 'All'){
       return this.setState({ filteredItems: this.state.todoItems });
     }
     else{
-      const foundItems = _.filter(this.state.todoItems, item => item.isCompleted === state);
+      var todoState = (state == 'Active') ? false : true
+      const foundItems = _.filter(this.state.todoItems, item => item.isCompleted === todoState);
       return this.setState({ filteredItems: foundItems });
     }
   }
